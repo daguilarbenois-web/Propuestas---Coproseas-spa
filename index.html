@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#1a1a2e">
+<title>Propuestas – COPROSEAS SpA</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --red:    #e63946;
+  --dark:   #1a1a2e;
+  --panel:  #1e2040;
+  --input:  #2a2a48;
+  --border: #3a3a58;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f0f2f5;
+  color: #222;
+  min-height: 100vh;
+}
+
+/* ══════════════════════════════════════
+   BARRA DE PESTAÑAS (solo móvil)
+══════════════════════════════════════ */
+.tab-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 100;
+  background: var(--dark);
+  border-top: 2px solid var(--red);
+  height: 58px;
+}
+.tab-bar button {
+  flex: 1;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  transition: color .2s;
+}
+.tab-bar button.active { color: var(--red); }
+.tab-bar button svg { width: 20px; height: 20px; fill: currentColor; }
+
+/* ══════════════════════════════════════
+   LAYOUT ESCRITORIO
+══════════════════════════════════════ */
+.app {
+  display: grid;
+  grid-template-columns: 440px 1fr;
+  min-height: 100vh;
+}
+
+/* ══════════════════════════════════════
+   PANEL FORMULARIO
+══════════════════════════════════════ */
+.panel {
+  background: var(--panel);
+  color: #eee;
+  padding: 24px 20px 80px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.panel-logo {
+  text-align: center;
+  border-bottom: 1px solid #333;
+  padding-bottom: 16px;
+}
+.panel-logo img {
+  height: 56px;
+  object-fit: contain;
+  margin-bottom: 6px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.panel-logo h1 { font-size: 1.25rem; color: var(--red); letter-spacing: 1px; }
+.panel-logo p  { font-size: 0.74rem; color: #aaa; margin-top: 2px; }
+
+.section-title {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--red);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+.field label { font-size: 0.78rem; color: #ccc; }
+.field input,
+.field textarea {
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: #fff;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color .2s;
+  -webkit-appearance: none;
+}
+.field input:focus,
+.field textarea:focus { border-color: var(--red); }
+.field textarea { resize: vertical; min-height: 72px; }
+
+/* Ítems */
+.items-header {
+  display: grid;
+  grid-template-columns: 24px 1fr 108px 28px;
+  gap: 5px;
+  font-size: 0.65rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.item-row {
+  display: grid;
+  grid-template-columns: 24px 1fr 108px 28px;
+  gap: 5px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.item-row span { font-size: 0.78rem; color: #888; text-align: center; }
+.item-row input {
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: #fff;
+  padding: 8px 9px;
+  font-size: 0.83rem;
+  outline: none;
+  width: 100%;
+  -webkit-appearance: none;
+}
+.item-row input:focus { border-color: var(--red); }
+.item-row input.monto { text-align: right; }
+
+/* GG / Utilidades */
+.pct-row {
+  display: grid;
+  grid-template-columns: 1fr 80px;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.pct-row label { font-size: 0.82rem; color: #ccc; }
+.pct-row input {
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--red);
+  padding: 8px 9px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: right;
+  outline: none;
+  -webkit-appearance: none;
+}
+.pct-row input:focus { border-color: var(--red); }
+
+/* Consideraciones */
+.consider-list { display: flex; flex-direction: column; gap: 7px; }
+.consider-item {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  cursor: pointer;
+}
+.consider-item input[type="checkbox"] {
+  margin-top: 3px;
+  accent-color: var(--red);
+  flex-shrink: 0;
+  width: 16px; height: 16px;
+  cursor: pointer;
+}
+.consider-item span {
+  font-size: 0.78rem;
+  color: #bbb;
+  line-height: 1.45;
+}
+
+.btn-add {
+  background: none;
+  border: 1px dashed #555;
+  border-radius: 7px;
+  color: #888;
+  cursor: pointer;
+  padding: 8px;
+  font-size: 0.8rem;
+  width: 100%;
+  transition: all .2s;
+  margin-top: 4px;
+}
+.btn-add:hover { border-color: var(--red); color: var(--red); }
+
+.btn-remove {
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  transition: color .2s;
+}
+.btn-remove:hover { color: var(--red); }
+
+.btn-generate {
+  background: var(--red);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 14px;
+  width: 100%;
+  transition: background .2s;
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+.btn-generate:active,
+.btn-generate:hover { background: #c1121f; }
+
+/* ══════════════════════════════════════
+   PANEL VISTA PREVIA
+══════════════════════════════════════ */
+.preview-area {
+  background: #cfd2d7;
+  padding: 24px 24px 48px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.preview-toolbar {
+  display: flex;
+  gap: 10px;
+  align-self: flex-end;
+}
+.btn-print {
+  background: var(--dark);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 10px 20px;
+  transition: background .2s;
+}
+.btn-print:hover { background: var(--red); }
+
+/* Contenedor con escala para móvil */
+.sheet-scaler {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Hoja A4 */
+.sheet {
+  background: #fff;
+  width: 794px;
+  min-height: 1123px;
+  padding: 50px 66px 62px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.18);
+  font-family: 'Georgia', serif;
+  color: #111;
+  transform-origin: top center;
+}
+
+/* Header con logo */
+.sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3px solid var(--red);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+}
+.sheet-header .logo-wrap img { height: 60px; object-fit: contain; }
+.sheet-header .title-wrap { text-align: right; }
+.sheet-header .title-wrap h1 {
+  font-size: 1.5rem;
+  color: var(--dark);
+  font-family: 'Segoe UI', sans-serif;
+}
+.sheet-header .title-wrap h2 {
+  font-size: 0.95rem;
+  color: #666;
+  font-weight: normal;
+  font-family: 'Segoe UI', sans-serif;
+  margin-top: 2px;
+}
+
+.emit-bar {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #555;
+  font-family: 'Segoe UI', sans-serif;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.emit-bar b { color: var(--dark); }
+
+.recipient-box {
+  background: #f5f5f8;
+  border-left: 4px solid var(--red);
+  padding: 9px 13px;
+  margin-bottom: 18px;
+  font-size: 0.85rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+.r-label { font-weight: 700; color: var(--dark); }
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px 20px;
+  margin-bottom: 20px;
+  font-size: 0.86rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+.meta-item { display: flex; gap: 5px; }
+.meta-label { font-weight: 700; color: #333; white-space: nowrap; }
+.meta-value { color: #111; }
+
+.doc-section { margin-bottom: 18px; }
+.doc-section h3 {
+  font-size: 0.98rem;
+  color: var(--dark);
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 700;
+  border-left: 4px solid var(--red);
+  padding-left: 9px;
+  margin-bottom: 6px;
+}
+.doc-section p {
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: #333;
+  text-align: justify;
+}
+
+/* Tabla presupuesto */
+.budget-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  font-family: 'Segoe UI', sans-serif;
+  margin-top: 5px;
+}
+.budget-table th {
+  background: var(--dark);
+  color: #fff;
+  padding: 7px 10px;
+  text-align: left;
+  font-size: 0.78rem;
+  letter-spacing: 0.3px;
+}
+.budget-table th:last-child { text-align: right; }
+.budget-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+.budget-table td:last-child { text-align: right; }
+.budget-table tr:nth-child(even) td { background: #f9f9f9; }
+.budget-table .row-cd  td { font-weight: 600; background: #eef0f3 !important; border-top: 2px solid #ccc; }
+.budget-table .row-pct td { background: #f0f7ff !important; color: #2244aa; font-style: italic; }
+.budget-table .row-sub td { font-weight: 600; background: #eef0f3 !important; }
+.budget-table .row-neto td { font-weight: 700; background: #e8ecf2 !important; color: var(--dark); }
+.budget-table .row-iva td { background: #f5f5f5 !important; color: #666; }
+.budget-table .row-total td {
+  font-weight: 700;
+  background: var(--dark) !important;
+  color: #fff;
+  font-size: 0.9rem;
+  border-top: 2px solid var(--red);
+}
+
+.consid-list {
+  font-size: 0.83rem;
+  color: #333;
+  line-height: 1.6;
+  font-family: 'Segoe UI', sans-serif;
+  padding-left: 4px;
+}
+.consid-list li { margin-bottom: 4px; }
+
+.sheet-footer {
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.signature-block {
+  text-align: center;
+  padding-top: 42px;
+  border-top: 1px solid #aaa;
+  font-family: 'Segoe UI', sans-serif;
+}
+.sig-name    { font-weight: 700; color: var(--dark); font-size: 0.87rem; }
+.sig-role    { color: #777; font-size: 0.77rem; }
+.sig-contact { color: #aaa; font-size: 0.72rem; margin-top: 4px; }
+
+.validity-note {
+  font-size: 0.76rem;
+  color: #aaa;
+  text-align: center;
+  margin-top: 18px;
+  font-style: italic;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE MÓVIL
+══════════════════════════════════════ */
+@media (max-width: 860px) {
+  .app {
+    display: block;
+  }
+
+  .tab-bar {
+    display: flex;
+  }
+
+  .panel {
+    padding-bottom: 72px;
+    min-height: 100vh;
+  }
+
+  .preview-area {
+    display: none;
+    padding: 16px 10px 80px;
+  }
+
+  .preview-toolbar {
+    align-self: stretch;
+    justify-content: center;
+  }
+
+  .btn-print {
+    width: 100%;
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+
+  /* Escala la hoja A4 para que quepa en pantalla */
+  .sheet-scaler {
+    overflow-x: hidden;
+  }
+
+  /* JS aplica el scale dinámico */
+  .sheet {
+    transform-origin: top left;
+  }
+
+  /* Modo visible según pestaña activa */
+  body.tab-preview .panel        { display: none; }
+  body.tab-preview .preview-area { display: flex; }
+}
+
+/* ══════════════════════════════════════
+   PRINT
+══════════════════════════════════════ */
+@media print {
+  body { background: #fff; }
+  .panel, .preview-toolbar, .tab-bar { display: none !important; }
+  .app { display: block; }
+  .preview-area { background: #fff; padding: 0; display: flex !important; }
+  .sheet { box-shadow: none; width: 100%; padding: 16mm 20mm; min-height: unset; transform: none !important; }
+  .sheet-scaler { display: block; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ══════════ FORMULARIO ══════════ -->
+  <aside class="panel" id="panel-form">
+    <div class="panel-logo">
+      <img src="logo.png" alt="Logo COPROSEAS" onerror="this.style.display='none'">
+      <h1>COPROSEAS SpA</h1>
+      <p>Generador de Propuestas Técnico-Económicas</p>
+    </div>
+
+    <div>
+      <div class="section-title">Datos del Proyecto</div>
+      <div class="field"><label>Cliente</label><input id="f-cliente" type="text" placeholder="Nombre del cliente o empresa" autocomplete="off"></div>
+      <div class="field"><label>RUT Cliente</label><input id="f-rut" type="text" placeholder="Ej: 65.158.418-3" autocomplete="off"></div>
+      <div class="field"><label>Responsable / Contacto</label><input id="f-responsable" type="text" placeholder="Ej: Directora Marcia Oyarzún" autocomplete="off"></div>
+      <div class="field"><label>Nombre del Proyecto</label><input id="f-proyecto" type="text" placeholder="Ej: Modificaciones interior recinto" autocomplete="off"></div>
+      <div class="field"><label>Ubicación</label><input id="f-ubicacion" type="text" placeholder="Ej: La Florida, RM" autocomplete="off"></div>
+      <div class="field"><label>Fecha de Emisión</label><input id="f-fecha" type="date"></div>
+    </div>
+
+    <div>
+      <div class="section-title">Alcance Técnico</div>
+      <div class="field">
+        <label>Descripción de los trabajos</label>
+        <textarea id="f-alcance" rows="4" placeholder="Describa los trabajos, partidas, metodología constructiva y coordinación de especialidades."></textarea>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title">Plazo y Validez</div>
+      <div class="field"><label>Plazo de ejecución (días corridos)</label><input id="f-plazo" type="number" min="1" placeholder="Ej: 60" inputmode="numeric"></div>
+      <div class="field"><label>Validez de la propuesta (días hábiles)</label><input id="f-validez" type="number" min="1" placeholder="5" inputmode="numeric"></div>
+    </div>
+
+    <div>
+      <div class="section-title">Presupuesto – Costos Directos</div>
+      <div class="items-header">
+        <span>#</span><span>Descripción</span><span>Monto ($)</span><span></span>
+      </div>
+      <div id="items-container"></div>
+      <button class="btn-add" onclick="addItem()">+ Agregar ítem</button>
+    </div>
+
+    <div>
+      <div class="section-title">Gastos Generales y Utilidades</div>
+      <div class="pct-row">
+        <label>Gastos Generales (%)</label>
+        <input id="f-gg" type="number" min="0" max="100" step="0.5" value="6" inputmode="decimal">
+      </div>
+      <div class="pct-row">
+        <label>Utilidades (% sobre CD+GG)</label>
+        <input id="f-util" type="number" min="0" max="100" step="0.5" value="10" inputmode="decimal">
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title">Forma de Pago</div>
+      <div class="field">
+        <textarea id="f-pago" rows="3"></textarea>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title">Consideraciones de la Oferta</div>
+      <div class="consider-list" id="consider-list"></div>
+      <button class="btn-add" onclick="addConsider()" style="margin-top:8px">+ Agregar consideración</button>
+    </div>
+
+    <button class="btn-generate" onclick="generateAndSwitch()">Generar Propuesta</button>
+  </aside>
+
+  <!-- ══════════ VISTA PREVIA ══════════ -->
+  <main class="preview-area" id="panel-preview">
+    <div class="preview-toolbar">
+      <button class="btn-print" onclick="window.print()">Imprimir / Guardar PDF</button>
+    </div>
+    <div class="sheet-scaler">
+      <div class="sheet" id="sheet">
+        <div style="color:#bbb;text-align:center;margin-top:180px;font-family:'Segoe UI',sans-serif;font-size:0.95rem;">
+          Complete el formulario y presione <strong>Generar Propuesta</strong>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Barra de pestañas móvil -->
+<nav class="tab-bar">
+  <button id="tab-form" class="active" onclick="switchTab('form')">
+    <svg viewBox="0 0 24 24"><path d="M3 5h18v2H3zm0 6h18v2H3zm0 6h18v2H3z"/></svg>
+    Formulario
+  </button>
+  <button id="tab-preview" onclick="switchTab('preview')">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg>
+    Vista Previa
+  </button>
+</nav>
+
+<script>
+// ── Pestañas ──
+function switchTab(tab) {
+  document.getElementById('tab-form').classList.toggle('active', tab === 'form');
+  document.getElementById('tab-preview').classList.toggle('active', tab === 'preview');
+  document.body.classList.toggle('tab-preview', tab === 'preview');
+  if (tab === 'preview') scaleSheet();
+}
+
+function generateAndSwitch() {
+  generatePreview();
+  if (window.innerWidth <= 860) switchTab('preview');
+}
+
+// ── Escalar hoja A4 en móvil ──
+function scaleSheet() {
+  const sheet = document.getElementById('sheet');
+  const scaler = sheet.parentElement;
+  const availW = scaler.clientWidth;
+  const scale = Math.min(1, availW / 794);
+  sheet.style.transform = `scale(${scale})`;
+  sheet.style.marginBottom = ((1123 * scale) - 1123) + 'px';
+  scaler.style.height = (1123 * scale) + 'px';
+}
+window.addEventListener('resize', () => { if (document.body.classList.contains('tab-preview')) scaleSheet(); });
+
+// ── Ítems ──
+let items = [
+  { desc: 'Obras preliminares', monto: '' },
+  { desc: 'Obras gruesas',      monto: '' },
+  { desc: 'Terminaciones',      monto: '' },
+];
+
+function renderItems() {
+  const c = document.getElementById('items-container');
+  c.innerHTML = '';
+  items.forEach((item, i) => {
+    const row = document.createElement('div');
+    row.className = 'item-row';
+    row.innerHTML = `
+      <span>${i + 1}</span>
+      <input type="text" value="${item.desc}" placeholder="Descripción"
+        oninput="items[${i}].desc = this.value">
+      <input type="text" class="monto" value="${item.monto}" placeholder="0"
+        oninput="items[${i}].monto = this.value" inputmode="numeric">
+      <button class="btn-remove" onclick="removeItem(${i})">✕</button>
+    `;
+    c.appendChild(row);
+  });
+}
+function addItem()     { items.push({ desc: '', monto: '' }); renderItems(); }
+function removeItem(i) { if (items.length > 1) { items.splice(i, 1); renderItems(); } }
+
+// ── Consideraciones ──
+let considers = [
+  { text: 'Fecha de inicio se coordinará post adjudicación. La constructora requiere 5 días hábiles para iniciar proceso de compras y coordinaciones internas.', active: true },
+  { text: 'Los valores de esta oferta están considerados para ejecutar la totalidad de las partidas.', active: true },
+  { text: 'En caso de no adjudicar la totalidad de las partidas, los precios ofertados tendrán un incremento del 10% en su valor unitario.', active: true },
+  { text: 'Para iniciar labores de construcción se solicita un anticipo del 25%.', active: true },
+  { text: 'Disponibles para visita a dependencias con el fin de explicar alcances o resolver dudas respecto a la oferta.', active: true },
+  { text: 'Validez de la oferta: 5 días hábiles.', active: true },
+  { text: 'Proyecto considera ejecutar labores en días hábiles.', active: true },
+  { text: 'Las labores a ejecutar consideran supervisión de un profesional rotativo.', active: true },
+];
+
+function renderConsiders() {
+  const c = document.getElementById('consider-list');
+  c.innerHTML = '';
+  considers.forEach((item, i) => {
+    const label = document.createElement('label');
+    label.className = 'consider-item';
+    label.innerHTML = `
+      <input type="checkbox" ${item.active ? 'checked' : ''}
+        onchange="considers[${i}].active = this.checked">
+      <span contenteditable="true"
+        onblur="considers[${i}].text = this.innerText.trim()">${item.text}</span>
+    `;
+    c.appendChild(label);
+  });
+}
+function addConsider() {
+  considers.push({ text: 'Nueva consideración…', active: true });
+  renderConsiders();
+}
+
+// ── Cálculos ──
+function parseNum(val) {
+  const n = parseFloat(String(val).replace(/\./g, '').replace(',', '.'));
+  return isNaN(n) ? 0 : n;
+}
+function fmt(n)       { return n === 0 ? '—' : '$ ' + Math.round(n).toLocaleString('es-CL'); }
+function fmtN(n)      { return '$ ' + Math.round(n).toLocaleString('es-CL'); }
+
+function calcBudget() {
+  const totalCD = items.reduce((s, it) => s + parseNum(it.monto), 0);
+  const ggPct   = parseNum(document.getElementById('f-gg').value);
+  const utilPct = parseNum(document.getElementById('f-util').value);
+  const gg      = totalCD * ggPct / 100;
+  const subCD   = totalCD + gg;
+  const util    = subCD * utilPct / 100;
+  const neto    = subCD + util;
+  const iva     = neto * 0.19;
+  const total   = neto + iva;
+  return { totalCD, ggPct, gg, subCD, utilPct, util, neto, iva, total };
+}
+
+// ── Generar ──
+function generatePreview() {
+  const cliente     = document.getElementById('f-cliente').value.trim()     || '—';
+  const rut         = document.getElementById('f-rut').value.trim();
+  const responsable = document.getElementById('f-responsable').value.trim();
+  const proyecto    = document.getElementById('f-proyecto').value.trim()    || '—';
+  const ubicacion   = document.getElementById('f-ubicacion').value.trim()   || '—';
+  const fechaRaw    = document.getElementById('f-fecha').value;
+  const plazo       = document.getElementById('f-plazo').value.trim()       || '____';
+  const validez     = document.getElementById('f-validez').value.trim()     || '5';
+  const alcance     = document.getElementById('f-alcance').value.trim()
+    || 'Descripción detallada de los trabajos a ejecutar, partidas consideradas, metodología constructiva y coordinación de especialidades.';
+  const pago = document.getElementById('f-pago').value.trim()
+    || 'La forma de pago se realizará contra estados de pago mensuales, conforme al avance real de los trabajos ejecutados.';
+
+  const fecha = fechaRaw
+    ? new Date(fechaRaw + 'T12:00:00').toLocaleDateString('es-CL', { day: '2-digit', month: 'long', year: 'numeric' })
+    : new Date().toLocaleDateString('es-CL', { day: '2-digit', month: 'long', year: 'numeric' });
+
+  const rowsHtml = items.map((item, i) => `
+    <tr><td>${i+1}</td><td>${item.desc||'—'}</td><td>${fmt(parseNum(item.monto))}</td></tr>
+  `).join('');
+
+  const b = calcBudget();
+
+  const recipientHtml = (rut || responsable) ? `
+    <div class="recipient-box">
+      <span class="r-label">Dirigido a:</span> <span>${cliente}</span>
+      ${rut ? `&nbsp;·&nbsp;<span class="r-label">RUT:</span> <span>${rut}</span>` : ''}
+      ${responsable ? `<br><span class="r-label">Responsable:</span> <span>${responsable}</span>` : ''}
+    </div>` : '';
+
+  const activeConsiders = considers.filter(c => c.active);
+  const considHtml = activeConsiders.length
+    ? `<ol class="consid-list">${activeConsiders.map(c => `<li>${c.text}</li>`).join('')}</ol>`
+    : '<p style="font-size:0.84rem;color:#aaa;">—</p>';
+
+  document.getElementById('sheet').innerHTML = `
+    <div class="sheet-header">
+      <div class="logo-wrap"><img src="logo.png" alt="COPROSEAS" onerror="this.style.display='none'"></div>
+      <div class="title-wrap"><h1>COPROSEAS SpA</h1><h2>Propuesta Técnica – Económica</h2></div>
+    </div>
+
+    <div class="emit-bar">
+      <span><b>De:</b> Derik Aguilar · COPROSEAS SpA &nbsp;|&nbsp; <b>Cel:</b> +56 9 7890 2754 &nbsp;|&nbsp; <b>Email:</b> daguilar@coproseas.cl</span>
+      <span><b>Fecha:</b> ${fecha}</span>
+    </div>
+
+    ${recipientHtml}
+
+    <div class="meta-grid">
+      <div class="meta-item"><span class="meta-label">Proyecto:</span><span class="meta-value">${proyecto}</span></div>
+      <div class="meta-item"><span class="meta-label">Ubicación:</span><span class="meta-value">${ubicacion}</span></div>
+    </div>
+
+    <div class="doc-section">
+      <h3>1. Introducción</h3>
+      <p>COPROSEAS SpA presenta la siguiente propuesta técnica–económica para el desarrollo del proyecto indicado, basada en criterios de calidad, seguridad, cumplimiento de plazos y control de costos.</p>
+    </div>
+
+    <div class="doc-section">
+      <h3>2. Alcance Técnico</h3>
+      <p>${alcance.replace(/\n/g, '<br>')}</p>
+    </div>
+
+    <div class="doc-section">
+      <h3>3. Plazo de Ejecución</h3>
+      <p>El plazo estimado de ejecución del proyecto será de <strong>${plazo} días corridos</strong>, contados desde la fecha de inicio efectiva de los trabajos.</p>
+    </div>
+
+    <div class="doc-section">
+      <h3>4. Presupuesto Resumen</h3>
+      <table class="budget-table">
+        <thead><tr><th>Ítem</th><th>Descripción</th><th>Monto $</th></tr></thead>
+        <tbody>
+          ${rowsHtml}
+          <tr class="row-cd"><td colspan="2"><strong>Total Costos Directos (CD)</strong></td><td><strong>${fmtN(b.totalCD)}</strong></td></tr>
+          <tr class="row-pct"><td colspan="2">Gastos Generales (${b.ggPct}%)</td><td>${fmtN(b.gg)}</td></tr>
+          <tr class="row-sub"><td colspan="2"><strong>Subtotal CD + GG</strong></td><td><strong>${fmtN(b.subCD)}</strong></td></tr>
+          <tr class="row-pct"><td colspan="2">Utilidad (${b.utilPct}%)</td><td>${fmtN(b.util)}</td></tr>
+          <tr class="row-neto"><td colspan="2"><strong>Precio Neto</strong></td><td><strong>${fmtN(b.neto)}</strong></td></tr>
+          <tr class="row-iva"><td colspan="2">IVA (19%)</td><td>${fmtN(b.iva)}</td></tr>
+          <tr class="row-total"><td colspan="2">TOTAL FINAL</td><td>${fmtN(b.total)}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="doc-section">
+      <h3>5. Forma de Pago</h3>
+      <p>${pago.replace(/\n/g, '<br>')}</p>
+    </div>
+
+    <div class="doc-section">
+      <h3>6. Condiciones Generales</h3>
+      <p>Los trabajos se ejecutarán conforme a normativa vigente. No se incluyen trabajos no especificados en el alcance. Cualquier modificación deberá formalizarse mediante cambio aprobado.</p>
+    </div>
+
+    <div class="doc-section">
+      <h3>7. Consideraciones de la Oferta</h3>
+      ${considHtml}
+    </div>
+
+    <div class="doc-section">
+      <h3>8. Validez de la Propuesta</h3>
+      <p>La presente propuesta tiene una validez de <strong>${validez} días hábiles</strong> desde su fecha de emisión.</p>
+    </div>
+
+    <p style="font-size:0.84rem;color:#444;margin-top:12px;font-family:'Segoe UI',sans-serif;">
+      Sin otro particular, COPROSEAS SpA queda a disposición para resolver cualquier consulta técnica o comercial.
+    </p>
+
+    <div class="sheet-footer">
+      <div></div>
+      <div class="signature-block">
+        <div class="sig-name">Derik Aguilar Benois</div>
+        <div class="sig-role">Ingeniero Constructor</div>
+        <div class="sig-role">Representante Legal – COPROSEAS SpA</div>
+        <div class="sig-contact">daguilar@coproseas.cl · +56 9 7890 2754</div>
+        <div class="sig-contact">Los Militares 5620, Of 905, Las Condes · RUT 78.403.222-1</div>
+      </div>
+    </div>
+
+    <p class="validity-note">Propuesta generada el ${fecha} · Válida por ${validez} días hábiles</p>
+  `;
+}
+
+// ── Inicializar ──
+renderItems();
+renderConsiders();
+document.getElementById('f-fecha').valueAsDate = new Date();
+document.getElementById('f-validez').value = '5';
+document.getElementById('f-pago').value =
+  'La forma de pago se realizará contra estados de pago mensuales, conforme al avance real de los trabajos ejecutados. Para iniciar labores se solicita un anticipo del 25%.';
+</script>
+</body>
+</html>
